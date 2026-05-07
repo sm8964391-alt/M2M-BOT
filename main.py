@@ -11,6 +11,14 @@ from telethon.tl.types import ReactionEmoji
 from telethon.errors import FloodWaitError, InviteHashInvalidError, UserAlreadyParticipantError, SessionPasswordNeededError
 import logging
 
+# ─── MONKEY-PATCH to accept 'style' argument ─────────────────────────────────
+import telegram
+_original_init = telegram.InlineKeyboardButton.__init__
+def _patched_init(self, text, callback_data=None, url=None, **kwargs):
+    kwargs.pop('style', None)   # silently remove 'style'
+    _original_init(self, text, callback_data=callback_data, url=url, **kwargs)
+telegram.InlineKeyboardButton.__init__ = _patched_init
+
 # ================= CONFIGURATION =================
 BOT_TOKEN = "8769298679:AAHo6uH38eUHn2qPuaZTnTvL6aq0ZDcQNGU"
 API_ID = 33418562
